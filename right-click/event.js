@@ -1,42 +1,26 @@
 'use strict';
 
 {
-    var cmid = null;
-    var selectedText = "";
-
-    chrome.extension.onMessage.addListener(function(msg, sender, sendResponse){
-        if(msg.request === 'updateContentMenu'){
-            const selection = msg.selection;
-            selectedText = selection;
-
-            if(selection === ''){
-                if (cmid != null) {
-                    // メニューアイテムを削除
-                    chrome.contextMenus.remove(cmid);
-                    cmid = null;
-                }
-            }else{
-                var options = {
-                    id: 'option',
-                    title: "Open '%s' URL",
-                    contexts: ['selection']
-                };
-
-                if (cmid != null) {
-                    chrome.contextMenus.update(cmid, options);
-                } else {
-                    // メニューアイテムを追加
-                    cmid = chrome.contextMenus.create(options);
-                }
-            }
-        }
+    // メニューを登録
+    chrome.runtime.onInstalled.addListener(function(){
+        const menuItem = chrome.contextMenus.create({
+            id: 'youtube_id',
+            title: "テスト「%s」",
+            contexts: ['selection']
+        });
     });
 
     // メニューをクリック時に実行
-    chrome.contextMenus.onClicked.addListener(item => {
-        //alert("selected = " + selectedText);
-        chrome.tabs.create({
-            url: 'https://google.com'
-        });
+    chrome.contextMenus.onClicked.addListener(function(info, tab) {
+        const selectedMenu = info.menuItemId;
+        const selectedText = info.selectionText;
+
+        if(selectedMenu === "youtube_id"){
+            chrome.tabs.create({
+                url: 'https://google.com'
+            });
+        }else{
+            alert("selected=" + selectedText + ", menu=" + selectedMenu);
+        }
     });
 }
