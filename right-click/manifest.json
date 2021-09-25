@@ -3,6 +3,13 @@
     "name": "Right-Click Menus",
     "version": "1.0",
 
+    "content_scripts": [
+        {
+            "matches": ["https://*/*", "http://*/*"],
+            "js": ["content.js"]
+        }
+    ],
+
     "background": {
         "scripts": ["event.js"],
         "persistent": false
